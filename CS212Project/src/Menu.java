@@ -3,7 +3,6 @@ import java.util.InputMismatchException;
 public class Menu {
 
 	public static void main(String[] args) {
-		System.out.print("Hello!");
 
 		Phonebook pb= new Phonebook();
 		System.out.println("Welcome to the Linked Tree Phonebook!");
