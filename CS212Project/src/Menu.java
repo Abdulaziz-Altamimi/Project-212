@@ -3,6 +3,7 @@ import java.util.InputMismatchException;
 public class Menu {
 
 	public static void main(String[] args) {
+		
 
 		Phonebook pb= new Phonebook();
 		System.out.println("Welcome to the Linked Tree Phonebook!");
@@ -34,7 +35,7 @@ public class Menu {
 				pb.search_contact();
 				break;
 			case 3:
-
+				pb.Delete_contact();
 				break;
 			case 4:
 				pb.Schedule_event();
