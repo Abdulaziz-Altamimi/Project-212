@@ -24,9 +24,7 @@ public class Menu {
 			System.out.print("Enter your choice: ");
 			choice=kb.nextInt();
 			
-			}catch(InputMismatchException e) {
-				System.out.println("Wrong input!");
-			}
+			
 			switch(choice){
 			case 1:
 				pb.insert_contact();
@@ -52,14 +50,17 @@ public class Menu {
 			case 8:
 				break;
 			default:
-				System.out.println("wrong input Try again!");
+				System.out.println("wrong input Try again!\n");
 				break;
 			
-				
-		
 			}
+			}catch(InputMismatchException e) {
+				System.out.println("\nWrong input!\n");
+			}
+			
 		}while(choice!=8);
-		System.out.println("Goodbye!");
+		System.out.println("\nGoodbye!");
+		
 
 	}
 
