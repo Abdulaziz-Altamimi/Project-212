@@ -180,6 +180,7 @@ public class PhoneBook {
 	public void Schedule_event() { 
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		dateFormat.setLenient(false); // Set lenient to false
 
 		System.out.print("Enter event title: "); 
 		kb.nextLine();
@@ -227,7 +228,7 @@ public class PhoneBook {
 		else {
 			if(!ContactBST.findkey(e.getContact_Name())) 
 				System.out.println("\nContact not fount");
-			if(is_conflict)
+			if(ContactBST.findkey(e.getContact_Name())&&is_conflict)
 				System.out.println("\nthe Contact has conflict");
 			if(exist!= null)
 				System.out.println("\nThe event has same title");
@@ -246,6 +247,7 @@ public class PhoneBook {
 	}
 	public void Schedule_event1() { 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		dateFormat.setLenient(false); // Set lenient to false
 		String name;
 		Event e1;
 		System.out.println("\nEnter type: ");
@@ -277,7 +279,7 @@ public class PhoneBook {
 		String title=kb.nextLine(); 
 		e1 = new Event(title);
 		do {
-			System.out.print("Enter contact name (Write "+"done"+" to Stop): "); 
+			System.out.print("Enter contact name (Write 'done' to Stop): "); 
 			name=kb.nextLine();
 
 
@@ -331,6 +333,8 @@ public class PhoneBook {
 			}
 			else {
 				System.out.println("\n"+c.getContact_Name()+" Has a conflict with this Event.");
+				System.out.println("Cannot add event.\n");
+				return;
 			}
 			e.getContact_Names().findNext();
 
@@ -343,6 +347,8 @@ public class PhoneBook {
 		}
 		else {
 			System.out.println("\n"+c.getContact_Name()+" Has a conflict with this Event.");
+			System.out.println("Cannot add event.\n");
+			return;
 		}
 
 		if(!e.getEvents_contacts().empty()&&exist==null) { 
@@ -450,9 +456,9 @@ public class PhoneBook {
 					All_event.findNext();
 			}
 			if(All_event.retrive().getType().equalsIgnoreCase("Appointment")) {
-				All_event.remove();
-				if(!All_event.Last())//to not move the current to null if the element is the last.
-					All_event.findNext();
+				if(All_event.retrive().getContact_Name().equalsIgnoreCase(name)) {
+					All_event.remove();
+				}
 			}
 			else {
 				All_event.retrive().getContact_Names().findFirst();
@@ -469,12 +475,12 @@ public class PhoneBook {
 				}
 				if(All_event.retrive().Contact_Names.empty())
 					All_event.remove();
-
-				if(ContactBST.findkey(name)) {
-					System.out.println("\nThe Contact has deleted\n");
-					ContactBST.removeKey(name);
-				}
 			}
+			if(ContactBST.findkey(name)) {
+				System.out.println("\nThe Contact has deleted\n");
+				ContactBST.removeKey(name);
+			}
+
 
 		}
 	}
