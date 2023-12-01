@@ -245,13 +245,12 @@ public class PhoneBook {
 		String title=kb.nextLine(); 
 		e1 = new Event(title);
 		do {
-			System.out.print("Enter contact name: "); 
+			System.out.print("Enter contact name (Write "+"done"+" to Stop): "); 
 			name=kb.nextLine();
 
 
 			if(ContactBST.findkey(name)) {
-				Contact c1 = search_contact(name);	
-				c1.display();
+				Contact c1 = search_contact(name);
 				e1.getContact_Names().insert(c1.getContact_Name()); 
 			} 
 			//else
@@ -267,6 +266,10 @@ public class PhoneBook {
 		Event e = new Event(title, date, location, e1.getContact_Names(), type); 
 		Event exist = search_event(e.getEvent_title()); //to check if the event is already exists
 		e.getContact_Names().findFirst();
+		if(e.getContact_Names().empty()) {
+			System.out.println("Cannot Add Contact");
+			return;
+		}
 		while(!e.getContact_Names().Last()) {
 			Contact c= search_contact(e.getContact_Names().retrive()); 
 			boolean is_conflict=conflict(e, c);
@@ -354,7 +357,7 @@ public class PhoneBook {
 			System.out.println("\nThe Phonebook is empty\n");
 		else {
 			if(!ContactBST.findkey(name)) {
-				System.out.println("The contact does not exists!.");
+				System.out.println("\nThe contact does not exists!.\n");
 				return;
 			}
 
@@ -363,96 +366,59 @@ public class PhoneBook {
 				ContactBST.removeKey(name); 
 				return;
 			}
-			c.getContact_events().findFirst();
-			while(!c.getContact_events().Last()) {
-				if(c.getContact_events().retrive().getType().equalsIgnoreCase("Appointment")) {
-					if(!All_event.empty()) {
-						All_event.findFirst();
-						while(!All_event.Last()) {
-							if(All_event.retrive().getContact_Name().equalsIgnoreCase(name))
-								All_event.remove();
-							if(!All_event.Last())//to not move the current to null if the element is the last.
-								All_event.findNext();
-						}
-						if(All_event.retrive().getContact_Name().equalsIgnoreCase(name))
-							All_event.remove();
-					}
-
+			All_event.findFirst();
+			while(!All_event.Last()) {
+				if(All_event.retrive().getType().equalsIgnoreCase("Appointment")) {
+					All_event.remove();
+					if(!All_event.Last())//to not move the current to null if the element is the last.
+						All_event.findNext();
 				}
 				else {
-					c.getContact_events().retrive().getContact_Names().findFirst();
-					while(!c.getContact_events().retrive().getContact_Names().Last()) {
-						if(c.getContact_events().retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
-							c.getContact_events().retrive().getContact_Names().remove();
+					All_event.retrive().getContact_Names().findFirst();
+					while(!All_event.retrive().getContact_Names().Last()) {
+						if(All_event.retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
+							All_event.retrive().getContact_Names().remove();
 						}
-						if(!c.getContact_events().retrive().getContact_Names().Last())
-							c.getContact_events().retrive().getContact_Names().findNext();
-					}
-					if(c.getContact_events().retrive().getContact_Names().retrive().equalsIgnoreCase(name)) 
-						c.getContact_events().retrive().getContact_Names().remove();
-
-					if(c.getContact_events().retrive().getContact_Names().empty()) {
-						if(!All_event.empty()) {
-							All_event.findFirst();
-							while(!All_event.Last()) {
-								if(All_event.retrive().getEvent_title().equalsIgnoreCase(c.getContact_events().retrive().getEvent_title()))
-									All_event.remove();
-								if(!All_event.Last())//to not move the current to null if the element is the last.
-									All_event.findNext();
-							}
-							if(All_event.retrive().getEvent_title().equalsIgnoreCase(c.getContact_events().retrive().getEvent_title()))
-								All_event.remove();
+						if(!All_event.retrive().getContact_Names().Last()) {
+							All_event.retrive().getContact_Names().findNext();
 						}
 					}
-
-				}
-				if(!c.getContact_events().Last())//to not move the current to null if the element is the last.
-					c.getContact_events().findNext();
-			}
-			if(c.getContact_events().retrive().getType().equalsIgnoreCase("Appointment")) {
-				if(!All_event.empty()) {
-					All_event.findFirst();
-					while(!All_event.Last()) {
-						if(All_event.retrive().getContact_Name().equalsIgnoreCase(name))
-							All_event.remove();
-						if(!All_event.Last())//to not move the current to null if the element is the last.
-							All_event.findNext();
+					if(All_event.retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
+						All_event.retrive().getContact_Names().remove();
 					}
-					if(All_event.retrive().getContact_Name().equalsIgnoreCase(name))
+					if(All_event.retrive().Contact_Names.empty())
 						All_event.remove();
 				}
-
+				if(!All_event.Last())//to not move the current to null if the element is the last.
+					All_event.findNext();
+			}
+			if(All_event.retrive().getType().equalsIgnoreCase("Appointment")) {
+				All_event.remove();
+				if(!All_event.Last())//to not move the current to null if the element is the last.
+					All_event.findNext();
 			}
 			else {
-				c.getContact_events().retrive().getContact_Names().findFirst();
-				while(!c.getContact_events().retrive().getContact_Names().Last()) {
-					if(c.getContact_events().retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
-						c.getContact_events().retrive().getContact_Names().remove();
+				All_event.retrive().getContact_Names().findFirst();
+				while(!All_event.retrive().getContact_Names().Last()) {
+					if(All_event.retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
+						All_event.retrive().getContact_Names().remove();
 					}
-					if(!c.getContact_events().retrive().getContact_Names().Last())
-						c.getContact_events().retrive().getContact_Names().findNext();
-				}
-				if(c.getContact_events().retrive().getContact_Names().retrive().equalsIgnoreCase(name)) 
-					c.getContact_events().retrive().getContact_Names().remove();
-
-				if(c.getContact_events().retrive().getContact_Names().empty()) {
-					if(!All_event.empty()) {
-						All_event.findFirst();
-						while(!All_event.Last()) {
-							if(All_event.retrive().getEvent_title().equalsIgnoreCase(c.getContact_events().retrive().getEvent_title()))
-								All_event.remove();
-							if(!All_event.Last())//to not move the current to null if the element is the last.
-								All_event.findNext();
-						}
-						if(All_event.retrive().getEvent_title().equalsIgnoreCase(c.getContact_events().retrive().getEvent_title()))
-							All_event.remove();
+					if(!All_event.retrive().getContact_Names().Last()) {
+						All_event.retrive().getContact_Names().findNext();
 					}
 				}
-
+				if(All_event.retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
+					All_event.retrive().getContact_Names().remove();
+				}
+				if(All_event.retrive().Contact_Names.empty())
+					All_event.remove();
+				
+				if(ContactBST.findkey(name)) {
+					System.out.println("\nThe Contact has deleted\n");
+					ContactBST.removeKey(name);
+				}
 			}
 
-			if(ContactBST.findkey(name))
-				ContactBST.removeKey(name);
 		}
 	}
 
