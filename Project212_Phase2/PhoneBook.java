@@ -1,4 +1,9 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
+
 public class PhoneBook {
 	public BST<Contact>ContactBST;
 	public LinkedList<Event> All_event;
@@ -29,7 +34,7 @@ public class PhoneBook {
 		notes=kb.nextLine();
 		Contact c = new Contact(Fname, Lname,num,EAddres,Address,BirthDay,notes);
 		if(ContactBST.checkPhone(num)|| !ContactBST.insert(c.getContact_Name(), c))
-			System.out.println("The contact already exists."); 
+			System.out.println("\nThe contact already exists.\n"); 
 
 		else
 			System.out.println("\nContact added successfully!\n");
@@ -81,6 +86,7 @@ public class PhoneBook {
 				break;
 
 			}
+			System.out.println("\n");
 			ContactBST.search(input);
 
 		}
@@ -97,7 +103,8 @@ public class PhoneBook {
 				All_event.retrive().Display_event(); 
 				All_event.findNext();
 			}
-			All_event.retrive().Display_event(); 
+			All_event.retrive().Display_event();
+			System.out.println("\n");
 		}		
 	}
 
@@ -172,6 +179,8 @@ public class PhoneBook {
 
 	public void Schedule_event() { 
 
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+
 		System.out.print("Enter event title: "); 
 		kb.nextLine();
 		String title=kb.nextLine(); 
@@ -180,6 +189,22 @@ public class PhoneBook {
 
 		System.out.print("Enter event date and time (MM/DD/YYYY HH:MM): ");
 		String date=kb.nextLine();
+		try {
+			Date eventDateTime = dateFormat.parse(date);
+
+			// Validate year, month, day, hours, and minutes
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(eventDateTime);
+
+			int enteredYear = calendar.get(Calendar.YEAR);
+			if (enteredYear < 2023 || enteredYear > 2030) {
+				throw new ParseException("Invalid year. Please enter a year between 2023 and 2030.", 6);
+			}
+		} catch (ParseException e) {
+			// Handle parsing exception (invalid input format, year, month, day, hours, or minutes)
+			System.out.println("\n"+e.getMessage()+"\n");
+			return;
+		}
 
 		System.out.print("Enter event location: ");
 		String location=kb.nextLine();
@@ -199,9 +224,15 @@ public class PhoneBook {
 			e.getEvents_contacts().insert_Contact(c);
 			System.out.println("\nEvent scheduled successfully! \n");
 		}
-
-		else
+		else {
+			if(!ContactBST.findkey(e.getContact_Name())) 
+				System.out.println("\nContact not fount");
+			if(is_conflict)
+				System.out.println("\nthe Contact has conflict");
+			if(exist!= null)
+				System.out.println("\nThe event has same title");
 			System.out.println("\nCannot add event.\n");
+		}
 
 	}
 	public Contact search_contact(String name) {
@@ -214,6 +245,7 @@ public class PhoneBook {
 		return null;
 	}
 	public void Schedule_event1() { 
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		String name;
 		Event e1;
 		System.out.println("\nEnter type: ");
@@ -251,14 +283,34 @@ public class PhoneBook {
 
 			if(ContactBST.findkey(name)) {
 				Contact c1 = search_contact(name);
-				e1.getContact_Names().insert(c1.getContact_Name()); 
+				e1.getContact_Names().insert(c1.getContact_Name());
+				if(name.equalsIgnoreCase("done"));
 			} 
-			//else
-			// System.out.println("Contact does not exist.");
+			else if(name.equalsIgnoreCase("done"))
+				System.out.println();
+
+			else
+				System.out.println("Contact does not exist.");
 		}while(!name.equalsIgnoreCase("done"));
 
 		System.out.print("Enter event date and time (MM/DD/YYYY HH:MM): ");
 		String date=kb.nextLine();
+		try {
+			Date eventDateTime = dateFormat.parse(date);
+
+			// Validate year, month, day, hours, and minutes
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(eventDateTime);
+
+			int enteredYear = calendar.get(Calendar.YEAR);
+			if (enteredYear < 2023 || enteredYear > 2030) {
+				throw new ParseException("Invalid year. Please enter a year between 2023 and 2030.", 6);
+			}
+		} catch (ParseException e) {
+			// Handle parsing exception (invalid input format, year, month, day, hours, or minutes)
+			System.out.println("\n"+e.getMessage()+"\n");
+			return;
+		}
 
 		System.out.print("Enter event location: ");
 		String location=kb.nextLine();
@@ -267,7 +319,7 @@ public class PhoneBook {
 		Event exist = search_event(e.getEvent_title()); //to check if the event is already exists
 		e.getContact_Names().findFirst();
 		if(e.getContact_Names().empty()) {
-			System.out.println("Cannot Add Contact");
+			System.out.println("\nYou don't Enter any Name\n");
 			return;
 		}
 		while(!e.getContact_Names().Last()) {
@@ -278,7 +330,7 @@ public class PhoneBook {
 				e.getEvents_contacts().insert_Contact(c);
 			}
 			else {
-				System.out.println(c.getContact_Name()+" Has a conflict with this Event.");
+				System.out.println("\n"+c.getContact_Name()+" Has a conflict with this Event.");
 			}
 			e.getContact_Names().findNext();
 
@@ -290,7 +342,7 @@ public class PhoneBook {
 			e.getEvents_contacts().insert_Contact(c);
 		}
 		else {
-			System.out.println(c.getContact_Name()+" Has a conflict with this Event.");
+			System.out.println("\n"+c.getContact_Name()+" Has a conflict with this Event.");
 		}
 
 		if(!e.getEvents_contacts().empty()&&exist==null) { 
@@ -298,8 +350,11 @@ public class PhoneBook {
 			System.out.println("\nEvent scheduled successfully! \n");
 		}
 
-		else
-			System.out.println("\nCannot add event.\n");
+		else {
+			if(exist!= null)
+				System.out.println("\nThe event has same title");
+			System.out.println("Cannot add event.\n");
+		}
 
 	}
 
@@ -369,7 +424,9 @@ public class PhoneBook {
 			All_event.findFirst();
 			while(!All_event.Last()) {
 				if(All_event.retrive().getType().equalsIgnoreCase("Appointment")) {
-					All_event.remove();
+					if(All_event.retrive().getContact_Name().equalsIgnoreCase(name)) {
+						All_event.remove();
+					}
 					if(!All_event.Last())//to not move the current to null if the element is the last.
 						All_event.findNext();
 				}
@@ -412,7 +469,7 @@ public class PhoneBook {
 				}
 				if(All_event.retrive().Contact_Names.empty())
 					All_event.remove();
-				
+
 				if(ContactBST.findkey(name)) {
 					System.out.println("\nThe Contact has deleted\n");
 					ContactBST.removeKey(name);
