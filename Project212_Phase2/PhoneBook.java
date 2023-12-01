@@ -282,14 +282,13 @@ public class PhoneBook {
 			System.out.print("Enter contact name (Write 'done' to Stop): "); 
 			name=kb.nextLine();
 
-
 			if(ContactBST.findkey(name)) {
 				Contact c1 = search_contact(name);
 				e1.getContact_Names().insert(c1.getContact_Name());
 				if(name.equalsIgnoreCase("done"));
 			} 
 			else if(name.equalsIgnoreCase("done"))
-				System.out.println();
+				System.out.print("");
 
 			else
 				System.out.println("Contact does not exist.");
