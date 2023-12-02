@@ -137,6 +137,7 @@ public class PhoneBook {
 
 			default:
 				System.out.println("Wrong number");
+				return;
 
 
 			}
@@ -211,13 +212,9 @@ public class PhoneBook {
 		String location=kb.nextLine();
 
 		Event e = new Event(title, date, location, name, "Appointment"); 
-		//boolean flag=true;
 		Event exist = search_event(e.getEvent_title());//to check if the event is already exists
 		Contact c=search_contact(name);// to check if the contact is in the contact BST
 		boolean is_conflict=conflict(e, c); // to check if there is a conflict in date and time
-		//if(type.equalsIgnoreCase("Appointment")) 
-		//	if( exist!=null) 
-		//flag=false;
 
 		if(exist==null&&ContactBST.findkey(e.getContact_Name())&&!is_conflict) { 
 			All_event.insert_Event(e);
@@ -266,6 +263,7 @@ public class PhoneBook {
 
 		default:
 			System.out.println("Wrong number");
+			return;
 
 
 		}
@@ -278,11 +276,11 @@ public class PhoneBook {
 		kb.nextLine();
 		String title=kb.nextLine(); 
 		e1 = new Event(title);
-		do {
+		do { //to add more than one Contact to the event
 			System.out.print("Enter contact name (Write 'done' to Stop): "); 
 			name=kb.nextLine();
 
-			if(ContactBST.findkey(name)) {
+			if(ContactBST.findkey(name)) {  //to check if the contact is exist
 				Contact c1 = search_contact(name);
 				e1.getContact_Names().insert(c1.getContact_Name());
 				if(name.equalsIgnoreCase("done"));
@@ -325,7 +323,7 @@ public class PhoneBook {
 		}
 		while(!e.getContact_Names().Last()) {
 			Contact c= search_contact(e.getContact_Names().retrive()); 
-			boolean is_conflict=conflict(e, c);
+			boolean is_conflict=conflict(e, c); //to check if the Contact has conflict
 			if(!is_conflict) {
 				c.getContact_events().insert_Event(e);
 				e.getEvents_contacts().insert_Contact(c);
@@ -410,19 +408,21 @@ public class PhoneBook {
 
 	}
 
+
 	public void Delete_contact() {
 		System.out.print("Enter the contact name: ");
 		String name=kb.nextLine();
 		if(ContactBST.empty())
 			System.out.println("\nThe Phonebook is empty\n");
 		else {
-			if(!ContactBST.findkey(name)) {
+			if(!ContactBST.findkey(name)) {		//to check if the contact is exist
 				System.out.println("\nThe contact does not exists!.\n");
 				return;
 			}
 
 			Contact c = search_contact(name);
 			if(c.getContact_events().empty()) {
+				System.out.println("\nThe Contact has deleted\n");
 				ContactBST.removeKey(name); 
 				return;
 			}
@@ -432,8 +432,11 @@ public class PhoneBook {
 					if(All_event.retrive().getContact_Name().equalsIgnoreCase(name)) {
 						All_event.remove();
 					}
-					if(!All_event.Last())//to not move the current to null if the element is the last.
-						All_event.findNext();
+					else {
+						if(!All_event.Last())//to not move the current to null if the element is the last.
+							All_event.findNext();
+					}
+
 				}
 				else {
 					All_event.retrive().getContact_Names().findFirst();
@@ -448,11 +451,16 @@ public class PhoneBook {
 					if(All_event.retrive().getContact_Names().retrive().equalsIgnoreCase(name)) {
 						All_event.retrive().getContact_Names().remove();
 					}
-					if(All_event.retrive().Contact_Names.empty())
+					if(All_event.retrive().Contact_Names.empty()) {
 						All_event.remove();
+					}
+					else {
+						if(!All_event.Last())//to not move the current to null if the element is the last.
+							All_event.findNext();
+					}
+
 				}
-				if(!All_event.Last())//to not move the current to null if the element is the last.
-					All_event.findNext();
+
 			}
 			if(All_event.retrive().getType().equalsIgnoreCase("Appointment")) {
 				if(All_event.retrive().getContact_Name().equalsIgnoreCase(name)) {
